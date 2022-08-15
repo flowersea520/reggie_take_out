@@ -14,6 +14,8 @@ import com.itheima.reggie.service.SetmealService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,6 +46,8 @@ public class SetmealController {
      * @return
      */
     @PostMapping
+    // 新增套餐，修改套餐，删除套餐都要将缓存删除，因为数据更新了，要重新查询数据库
+    @CacheEvict(value = "setmealCache",allEntries = true) // 删除这个setmealCache分类下的缓存数据
     public R<String> save(@RequestBody SetmealDto setmealDto){ // 用SetmealDto（多表合并的实体类）
 
         log.info("套餐信息：{}", setmealDto);
@@ -111,6 +115,7 @@ public class SetmealController {
                             // http://localhost:8080/setmeal?ids=1556324903628898306,1415580119015145474
                             // 由于请求的是一个参数中是一个集合对象的参数，这个时候形参要用@RequestParam注解
                             // 当然如果用数组接收的话，就不用@RequestParam注解了
+    @CacheEvict(value = "setmealCache",allEntries = true) // 删除这个setmealCache分类下的缓存数据
     public R<String> delete(@RequestParam List<Long> ids) { // 将参数封装到list集合中，也可以封装到Long数组中去
         log.info("ids:{}",ids);
 
@@ -163,13 +168,15 @@ public class SetmealController {
     }
 
     /**
-     *  显示套餐信息
+     *  显示套餐信息（根据条件查询套餐数据
      * @param setmeal，传过来的long型categoryId参数封装成setmeal对象
      * @return
      *  // 请求的URL http://localhost:8080/setmeal/list?categoryId=1413342269393674242&status=1
      */
 
     @GetMapping("/list")
+    // 拼成一个key
+    @Cacheable(value = "setmealCache",key = "#setmeal.categoryId + '_' + #setmeal.status")
     public R<List<Setmeal>> list(Setmeal setmeal){
 
         LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();

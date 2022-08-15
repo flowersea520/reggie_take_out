@@ -1,6 +1,8 @@
 package com.itheima.reggie.common;
 
 import lombok.Data;
+
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,7 +12,7 @@ import java.util.Map;
  */
 
 @Data
-public class R<T> {
+public class R<T> implements Serializable { // 实现序列化接口，将java对象转换成字节数据
 
     private Integer code; //编码：1成功，0和其它数字为失败
 
