@@ -1,11 +1,5 @@
 # reggie_take_out
----
-title: 麦吉外卖笔记day01-03
-tags: [麦吉项目]
-index_img: https://typora011.oss-cn-guangzhou.aliyuncs.com/202208030026538.jpg
-date: 2022-8-3 0:53:00
 
----
 
 # 瑞吉外卖开发笔记 一
 
